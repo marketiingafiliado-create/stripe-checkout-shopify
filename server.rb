@@ -1,7 +1,11 @@
 require "sinatra"
 require "stripe"
 
-set :public_folder, File.dirname(__FILE__) + "/public"
+# Render necesita 0.0.0.0 y el puerto dinámico ENV["PORT"]
+set :bind, "0.0.0.0"
+set :port, ENV.fetch("PORT", 4567).to_i
+
+set :public_folder, File.join(__dir__, "public")
 
 Stripe.api_key = ENV["STRIPE_SECRET_KEY"]
 
@@ -24,9 +28,7 @@ post "/create-checkout-session" do
     line_items: [{
       price_data: {
         currency: "mxn",
-        product_data: {
-          name: "Producto Shopify"
-        },
+        product_data: { name: "Producto Shopify" },
         unit_amount: 24900
       },
       quantity: 1
